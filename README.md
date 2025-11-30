@@ -1,3 +1,43 @@
+## My First Kernel Modification
+
+This is my first attempt at modifying a kernel. On my Nothing Phone (2).
+
+There’s nothing special here. I just made this purely for my own personal use.
+Since I’m new to kernel edit, there may be bugs or issues. I’ll gladly accept PRs and suggestions.
+
+## Changes
+
+* Replaced the boot animation with dmesg output during boot.
+* ![IMG_20251201_002418](https://github.com/user-attachments/assets/1a0a76fc-a56e-41d4-980f-ea1192adf6ca)
+
+  That’s all for now.
+
+
+## Additional Details
+
+To support displaying `dmesg` directly during early boot, several kernel configuration options were adjusted:
+
+* **Enabled options**
+  ```CONFIG_VT=y
+  CONFIG_DRM_FBDEV_EMULATION=y
+  CONFIG_VT_CONSOLE=y
+  CONFIG_HW_CONSOLE=y
+  CONFIG_FRAMEBUFFER_CONSOLE=y
+  CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER=y
+  CONFIG_LOGO=n
+  ```
+* **Edited device tree**
+  
+  Removed cont_splash area from display dts for show dmesg output during boot.
+
+* **Add some kernel command line**
+  
+  The kernel command line has also been updated to ensure that verbose boot logs are always shown.
+
+```
+console=tty0 ignore_loglevel loglevel=8 fbcon=logo.nologo
+```
+---
 # How do I submit patches to Android Common Kernels
 
 1. BEST: Make all of your changes to upstream Linux. If appropriate, backport to the stable releases.
