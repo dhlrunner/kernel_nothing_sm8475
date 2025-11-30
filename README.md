@@ -1,46 +1,42 @@
-### My First Kernel Modification
+## My First Kernel Modification
 
-This is my first attempt at modifying a kernel.
+This is my first attempt at modifying a kernel. On my Nothing Phone (2).
+
 There’s nothing special here. I just made this purely for my own personal use.
 Since I’m new to kernel edit, there may be bugs or issues. I’ll gladly accept PRs and suggestions.
 
-### Changes
+## Changes
 
 * Replaced the boot animation with dmesg output during boot.
+* ![IMG_20251201_002418](https://github.com/user-attachments/assets/1a0a76fc-a56e-41d4-980f-ea1192adf6ca)
+
   That’s all for now.
 
 
-### Additional Details
+## Additional Details
 
 To support displaying `dmesg` directly during early boot, several kernel configuration options were adjusted:
 
-* **Enabled virtual and hardware consoles**
-  `CONFIG_VT_CONSOLE=y`
-  `CONFIG_HW_CONSOLE=y`
-  These ensure that the kernel can output messages to a basic virtual terminal early in the boot process.
-
-* **Enabled framebuffer console support**
-  `CONFIG_FRAMEBUFFER_CONSOLE=y`
-  `CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER=y`
-  This allows the kernel to use the framebuffer as a console device and delays the framebuffer console takeover until early boot messages are ready to be shown.
-
-* **Enabled simple DRM driver**
-  `CONFIG_DRM_SIMPLEDRM=y`
-  Provides a minimal DRM-based framebuffer for early graphics output, improving compatibility on modern systems.
-
-* **Disabled kernel boot logo**
-  `CONFIG_LOGO=n`
-  Removes the default kernel logo so that boot-time `dmesg` logs remain unobstructed.
+* **Enabled options**
+  ```CONFIG_VT=y
+  CONFIG_DRM_FBDEV_EMULATION=y
+  CONFIG_VT_CONSOLE=y
+  CONFIG_HW_CONSOLE=y
+  CONFIG_FRAMEBUFFER_CONSOLE=y
+  CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER=y
+  CONFIG_LOGO=n
+  ```
+* **Edited device tree**
+  
+  Removed cont_splash area from display dts for show dmesg output during boot.
 
 * **Add some kernel command line**
-  The kernel command line has also been updated to ensure that verbose boot logs are always shown:
+  
+  The kernel command line has also been updated to ensure that verbose boot logs are always shown.
 
 ```
 console=tty0 ignore_loglevel loglevel=8 fbcon=logo.nologo
 ```
-
-These configuration and command-line changes collectively replace the graphical boot animation with a clean, verbose early boot console that displays real time kernel messages.
-
 
 
 # How do I submit patches to Android Common Kernels
