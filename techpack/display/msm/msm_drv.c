@@ -178,6 +178,28 @@ module_param(reglog, bool, 0600);
 static bool fbdev = true;
 MODULE_PARM_DESC(fbdev, "Enable fbdev compat layer");
 module_param(fbdev, bool, 0600);
+
+/*
+ * Some GKI builds omit the downstream fbdev helper implementation. Provide
+ * no-op fallbacks so the driver links even when fbdev support isn't shipped.
+ */
+struct drm_fb_helper *msm_fbdev_init(struct drm_device *dev)
+{
+	drm_fbdev_generic_setup(dev, 32); /* 32 bpp */
+    if (!dev->fb_helper){
+		DRM_ERROR("fbdev setup failed\n");
+        return NULL;
+	}
+        /* generic_setup registers its own fb_helper; return it if you want hotplug */
+	DRM_INFO("fbdev setup OK\n");
+    return dev->fb_helper; /* available in 5.10 generic helper */
+}
+
+void msm_fbdev_free(struct drm_device *dev)
+{
+	   if (dev->fb_helper)
+                drm_fb_helper_fini(dev->fb_helper);
+}
 #endif
 
 static char *vram = "16m";
@@ -892,6 +914,8 @@ static int msm_drm_component_init(struct device *dev)
 			goto fail;
 		}
 	}
+
+		
 
 #ifdef CONFIG_DRM_FBDEV_EMULATION
 	if (fbdev)

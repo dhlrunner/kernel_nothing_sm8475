@@ -38,7 +38,7 @@
 #include <linux/of_gpio.h>
 #include <linux/of_irq.h>
 #include <linux/soc/qcom/panel_event_notifier.h>
-#if defined(CONFIG_FB)
+#if defined(CONFIG_FB) && defined(FB_EARLY_EVENT_BLANK)
 #include <linux/notifier.h>
 #include <linux/fb.h>
 #elif defined(CONFIG_DRM)
@@ -1547,7 +1547,7 @@ static void fts_resume_work(struct work_struct *work)
     fts_ts_resume(ts_data->dev);
 }
 
-#if defined(CONFIG_FB)
+#if defined(CONFIG_FB) && defined(FB_EARLY_EVENT_BLANK)
 static int fb_notifier_callback(struct notifier_block *self,
                                 unsigned long event, void *data)
 {
@@ -1734,8 +1734,8 @@ static void fts_ts_late_resume(struct early_suspend *handler)
 static int fts_ts_probe_entry(struct fts_ts_data *ts_data)
 {
     int ret = 0;
-    void *cookie = NULL;
     int pdata_size = sizeof(struct fts_ts_platform_data);
+    void *cookie = NULL;
 
     FTS_FUNC_ENTER();
     FTS_INFO("%s", FTS_DRIVER_VERSION);
@@ -1881,7 +1881,7 @@ static int fts_ts_probe_entry(struct fts_ts_data *ts_data)
     ts_data->pm_suspend = false;
 #endif
 
-#if defined(CONFIG_FB)
+#if defined(CONFIG_FB) && defined(FB_EARLY_EVENT_BLANK)
     ts_data->fb_notif.notifier_call = fb_notifier_callback;
     ret = fb_register_client(&ts_data->fb_notif);
     if (ret) {
@@ -1976,7 +1976,7 @@ static int fts_ts_remove_entry(struct fts_ts_data *ts_data)
     if (ts_data->ts_workqueue)
         destroy_workqueue(ts_data->ts_workqueue);
 
-#if defined(CONFIG_FB)
+#if defined(CONFIG_FB) && defined(FB_EARLY_EVENT_BLANK)
     if (fb_unregister_client(&ts_data->fb_notif))
         FTS_ERROR("[FB]Error occurred while unregistering fb_notifier.");
 #elif defined(CONFIG_DRM)
@@ -2226,3 +2226,5 @@ module_exit(fts_ts_exit);
 MODULE_AUTHOR("FocalTech Driver Team");
 MODULE_DESCRIPTION("FocalTech Touchscreen Driver");
 MODULE_LICENSE("GPL v2");
+
+

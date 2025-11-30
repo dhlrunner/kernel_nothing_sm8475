@@ -29,12 +29,14 @@
 	};
 };
 
+/*
 &reserved_memory {
 	splash_memory: splash_region {
 		reg = <0x0 0xb8000000 0x0 0x02b00000>;
 		label = "cont_splash_region";
 	};
 };
+*/
 
 &sde_dsi {
 	clocks = <&mdss_dsi_phy0 0>,
@@ -124,4 +126,15 @@
 
 &dsi_sim_dsc_10b_cmd {
 	qcom,ulps-enabled;
+};
+
+//For show dmesg boot log insted logo, we will disable the cont_splash
+&reserved_memory {
+    /delete-node/ cont_splash_region;
+};
+
+&mdss_mdp {
+    /delete-property/ qcom,cont-splash-memory;
+    /delete-property/ qcom,splash-memory;
+    /delete-property/ memory-region;
 };

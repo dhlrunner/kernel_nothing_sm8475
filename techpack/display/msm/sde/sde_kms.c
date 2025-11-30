@@ -3443,6 +3443,7 @@ static int sde_kms_cont_splash_config(struct msm_kms *kms,
 	struct sde_connector *sde_conn = NULL;
 	struct sde_splash_display *splash_display;
 
+
 	if (!kms) {
 		SDE_ERROR("invalid kms\n");
 		return -EINVAL;

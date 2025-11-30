@@ -2340,7 +2340,7 @@ static void drm_notifier_work_func(struct work_struct *work)
 
 //@}
 
-#elif IS_ENABLED(CONFIG_FB)
+#elif IS_ENABLED(CONFIG_FB) && defined(FB_EARLY_EVENT_BLANK)
 /**
  * goodix_ts_fb_notifier_callback - Framebuffer notifier callback
  * Called by kernel during framebuffer blanck/unblank phrase
@@ -2456,7 +2456,7 @@ int goodix_ts_stage2_init(struct goodix_ts_core *cd)
 	goodix_register_for_panel_events(cd->bus->dev->of_node, cd);
 #endif
 //@}
-#if IS_ENABLED(CONFIG_FB)
+#if IS_ENABLED(CONFIG_FB) && defined(FB_EARLY_EVENT_BLANK)
 	cd->fb_notifier.notifier_call = goodix_ts_fb_notifier_callback;
 	if (fb_register_client(&cd->fb_notifier))
 		ts_err("Failed to register fb notifier client:%d", ret);
@@ -2885,7 +2885,7 @@ static int goodix_ts_remove(struct platform_device *pdev)
 			panel_event_notifier_unregister(core_data->notifier_cookie);
 	#endif
 //@}
-	#if IS_ENABLED(CONFIG_FB)
+	#if IS_ENABLED(CONFIG_FB) && defined(FB_EARLY_EVENT_BLANK)
 		fb_unregister_client(&core_data->fb_notifier);
 	#endif
 		core_module_prob_sate = CORE_MODULE_REMOVED;
