@@ -2739,8 +2739,13 @@ static void sde_crtc_vblank_notify(struct drm_crtc *crtc, ktime_t ts)
 		sde_crtc->vblank_cb_count++;
 
 	sde_crtc->vblank_last_cb_time = ts;
-	if (sde_crtc->vsync_event_sf)
+	if (sde_crtc->vsync_event_sf){
 		sysfs_notify_dirent(sde_crtc->vsync_event_sf);
+		sde_crtc->vsync_event_sf = NULL; //fix dangling pointer
+	}
+		
+
+
 
 	drm_crtc_handle_vblank(crtc);
 	DRM_DEBUG_VBL("crtc%d, ts:%llu\n", crtc->base.id, ktime_to_us(ts));
